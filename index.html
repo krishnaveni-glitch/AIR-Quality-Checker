@@ -45,70 +45,20 @@
         // ⚠️ Rotate this key from your Razorpay Dashboard — it was shared in plain text earlier in this chat
         var razorpay = new Razorpay({ key: 'rzp_live_T52MWlo0hd9V0R' });
 
-        var statusEl = document.getElementById('status');
-        var debugEl = document.getElementById('debug');
-        var appsContainer = document.getElementById('upi-apps-container');
+        var paymentData = {
+    amount: 100, //pass in paise (amount: 100000 equals ₹1000)
+    method: 'upi',
+    contact: '9701798308',  // customer's mobile number
+    email: 'gaurav.kumar@example.com',  //customer's email address
+    order_id: 'order_T8b8J2HCb425dD' //.. and other payment parameters, as usual
+  };
+  razorpay.createPayment(paymentData, { app: 'phonepe'});
+   razorpay.on('payment.success', function(response) {
+   response.razorpay_payment_id
+   response.razorpay_order_id
+  });
+  razorpay.on('payment.error', function(resp){alert(resp.error.description)});
 
-        // Register callbacks once, outside any click handler
-        razorpay.on('payment.success', function (response) {
-            statusEl.textContent = "Payment successful!";
-            console.log('Success:', response.razorpay_payment_id, response.razorpay_order_id);
-        });
-
-        razorpay.on('payment.error', function (error) {
-            statusEl.textContent = "Payment failed. Please try again.";
-            console.error('Payment error:', error);
-        });
-
-        // STEP 1: When "Pay" is clicked, detect available UPI apps
-        document.getElementById('rzp-button1').onclick = function () {
-            statusEl.textContent = "Checking available apps...";
-            appsContainer.innerHTML = ''; // clear any previous buttons
-
-            razorpay.getSupportedUpiIntentApps()
-                .then((supported) => {
-                    debugEl.textContent = "Detected Apps: " + JSON.stringify(supported, null, 2);
-
-                    if (!supported || supported.length === 0) {
-                        statusEl.textContent = "No UPI apps found on this device.";
-                        return;
-                    }
-
-                    statusEl.textContent = "Select an app to pay:";
-                    renderAppButtons(supported);
-                })
-                .catch((err) => {
-                    statusEl.textContent = "Error detecting apps.";
-                    debugEl.textContent = "Error: " + (err && err.message ? err.message : JSON.stringify(err));
-                });
-        };
-
-        // STEP 2: Render one button per detected app (e.g. "Pay with PHONEPE")
-        function renderAppButtons(apps) {
-            apps.forEach(function (appCode) {
-                var btn = document.createElement('button');
-                btn.textContent = "Pay with " + appCode.toUpperCase();
-                btn.onclick = function () {
-                    startUpiIntentPayment(appCode);
-                };
-                appsContainer.appendChild(btn);
-            });
-        }
-
-        // STEP 3: Trigger the actual payment for the app the user picked
-        function startUpiIntentPayment(appCode) {
-            statusEl.textContent = "Opening " + appCode.toUpperCase() + "...";
-
-            var paymentData = {
-                amount: 1000, // in paise — confirm this matches the amount you intend to charge
-                method: 'upi',
-                contact: '9701798308', // TODO: replace with actual customer's number
-                email: 'gaurav.kumar@example.com', // TODO: replace with actual customer's email
-                order_id: 'order_T8CSnhzJ2hMWqS' // ⚠️ still hardcoded — will break after first successful use
-            };
-            console.log("appCode"); 
-            razorpay.createPayment(paymentData, { app: appCode });
-        }
     </script>
 </body>
 </html>
