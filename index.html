@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href = "./structure.css">
+    <script type="text/javascript" src="https://checkout.razorpay.com/v1/razorpay.js"></script>
 
     <title>Air Quality</title>
 </head>
@@ -48,46 +49,34 @@
 
     </div>
     <script src = "structure.js"> </script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-var options = {
-    "key": "rzp_live_T52MWlo0hd9V0R", // Enter the Key ID generated from the Dashboard
-    "amount": "1000", // Amount is in currency subunits. 
-    "currency": "INR",
-    "name": "GUNDRATHI KRISHNAVENI", //your business name
-    "description": "Test Transaction",
-    // "image": "https://example.com/your_logo",
-    "order_id": "order_T8CSnhzJ2hMWqS", // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    "callback_url": "https://webhook.site/b1331777-52fe-4e82-af1b-a42a27376573",
-    "redirect":true,
-    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-        "name": "Gaurav Kumar", //your customer's name
-        "email": "gaurav.kumar@example.com",
-        "contact": "+919876543210" //Provide the customer's phone number for better conversion rates 
-    },
-    "notes": {
-        "address": "Razorpay Corporate Office"
-    },
-    "theme": {
-        "color": "#3399cc"
-    },
-    "modal": {
-        "backdropclose": true,
-        "escape": true,
-        "handleback": true,
-        "confirm_close": false,
-        "ondismiss": function(){
-            console.log("Yes closed"); 
-        },
-        "animation": false
-    }
-};
-var rzp1 = new Razorpay(options);
-document.getElementById('rzp-button1').onclick = function(e){
-    rzp1.open();
-    e.preventDefault();
+    <script>
+    var razorpay = new Razorpay({  key: 'rzp_live_T52MWlo0hd9V0R' });
+ razorpay.getSupportedUpiIntentApps()
+.then(() => {
+  // get list of apps available for payment
+})
+.catch(() => {
+  // no apps available
+});
+  var paymentData = {
+    amount: 1000, //pass in paise (amount: 100000 equals ₹1000)
+    method: 'upi',
+    contact: '9701798308',  // customer's mobile number
+    email: 'gaurav.kumar@example.com',  //customer's email address
+    order_id: 'order_T8CSnhzJ2hMWqS' //.. and other payment parameters, as usual
+  };
+  document.getElementById('rzp-button1').onclick = function(e){
+    razorpay.createPayment(paymentData, { app: 'phonepe'});
+   razorpay.on('payment.success', function(response) {
+   // response.razorpay_payment_id
+   // response.razorpay_order_id
+  });
+  razorpay.on('payment.error', function(error) {
+   // display error to customer
+  });
 }
-</script>
+
+    </script>
     
 </body>
 </html>
