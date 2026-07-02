@@ -3,82 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href = "./structure.css">
+    <link rel="stylesheet" href="./structure.css">
     <script type="text/javascript" src="https://checkout.razorpay.com/v1/razorpay.js"></script>
 
     <title>Air Quality</title>
 </head>
 <body>
-    <div id = "div">
-    <h1 id = "heading">AIR QUALITY CHECKER</h1>
+    <div id="div">
+    <h1 id="heading">AIR QUALITY CHECKER</h1>
 
-    <h1 class = "longitude">Longitude</h1>
-    <input type = "text" id="long">
+    <h1 class="longitude">Longitude</h1>
+    <input type="text" id="long">
 
-    <h1 class = "latitude">Latitude</h1>
-    <input type = "text" id="lat">
+    <h1 class="latitude">Latitude</h1>
+    <input type="text" id="lat">
 
-    <button id = "submit">Submit</button>
+    <button id="submit">Submit</button>
 
     <br>
 
-        <button id="rzp-button1">Pay</button>
+    <!-- Container where app-specific pay buttons will be added dynamically -->
+    <div id="upi-apps-container"></div>
+
+    <!-- Status / debug messages -->
+    <p id="status"></p>
+    <pre id="debug"></pre>
 
     <div class="loader"></div>
 
-    <div id = "output">
+    <div id="output">
 
-        <p class = "head">City:  <span class = "value" id = "city"></span></p>
-        <p class = "head">Country:  <span class = "value" id = "country"></span></p>
-    <p class = "head">AQI:  <span class = "value" id = "aqival"></span></p>
- 
+        <p class="head">City:  <span class="value" id="city"></span></p>
+        <p class="head">Country:  <span class="value" id="country"></span></p>
+        <p class="head">AQI:  <span class="value" id="aqival"></span></p>
 
-    <p class = "head">co: <span class = "value" id = "coval"></span></p>
+        <p class="head">co: <span class="value" id="coval"></span></p>
 
-    <p class = "head">no2:  <span class = "value" id = "no2val"></span></p>
+        <p class="head">no2:  <span class="value" id="no2val"></span></p>
 
+        <p class="head">o3: <span class="value" id="o3val"></span></p>
 
-    <p class = "head">o3: <span class = "value" id = "o3val"></span></p>
+        <p class="head">pm10: <span class="value" id="pm10val"></span></p>
 
-    <p class = "head">pm10: <span class = "value" id = "pm10val"></span></p>
+        <p class="head">pm25: <span class="value" id="pm25val"></span></p>
 
-    <p class = "head">pm25: <span class = "value" id = "pm25val"></span></p>
-
-    <p class = "head">so2: <span class = "value" id = "so2val"></span></p>
+        <p class="head">so2: <span class="value" id="so2val"></span></p>
     </div>
 
     </div>
-    <script src = "structure.js"> </script>
+    <script src="structure.js"></script>
     <script>
-    var razorpay = new Razorpay({  key: 'rzp_live_T52MWlo0hd9V0R' });
- razorpay.getSupportedUpiIntentApps()
-.then(() => {
-  // get list of apps available for payment
-})
-.catch(() => {
-  // no apps available
-});
- 
-  document.getElementById('rzp-button1').onclick = function(e){
-       var paymentData = {
-    amount: 100, //pass in paise (amount: 100000 equals ₹1000)
-    method: 'upi',
-    contact: '9701798308',  // customer's mobile number
-    email: 'gaurav.kumar@example.com',  //customer's email address
-    order_id: 'order_T8CSnhzJ2hMWqS' //.. and other payment parameters, as usual
-  };
-    razorpay.createPayment(paymentData, { app: 'phonepe'});
-   razorpay.on('payment.success', function(response) {
-   response.razorpay_payment_id
-   response.razorpay_order_id
-  });
-  razorpay.on('payment.error', function(error) {
-      console.log("error"),
-   alert(error.error.description)
-  });
-}
+        // ⚠️ Rotate this key from your Razorpay Dashboard — it was shared in plain text earlier
+        var razorpay = new Razorpay({ key: 'rzp_live_T52MWlo0hd9V0R' });
 
+        var statusEl = document.getElementById('status');
+        var debugEl = document.getElementById('debug');
+        var appsContainer = document.getElementById('upi-apps-container');
+
+        // Register success/error callbacks ONCE, not inside click handlers
+        razorpay.on('payment.success', function (response) {
+            statusEl.textContent = "Payment successful!";
+            console.log('Success:', response.razorpay_payment_id, response.razorpay_order_id);
+        });
+
+        razorpay.on('payment.error', function (error) {
+            statusEl.textContent = "Payment failed. Please try again.";
+            console.error('Payment error:', error);
+        });
+
+        // 1. Detect supported UPI apps and render a button for each
+        razorpay.getSupportedUpiIntentApps()
+            .then((supported) => {
+                debugEl.textContent = "Detected Apps: " + JSON.stringify(supported, null, 2);
+
+                if (!supported || supported.length === 0) {
+                    statusEl.textContent = "No UPI apps found on this device.";
+                    return;
+                }
+
+                statusEl.textContent = "Select an app to pay:";
+                renderAppButtons(supported);
+            })
+            .catch((err) => {
+                statusEl.textContent = "Error detecting apps.";
+                debugEl.textContent = "Error: " + (err && err.message ? err.message : JSON.stringify(err));
+            });
+
+        // 2. Render one button per detected app
+        function renderAppButtons(apps) {
+            apps.forEach(function (appCode) {
+                var btn = document.createElement('button');
+                btn.textContent = "Pay with " + appCode.toUpperCase();
+                btn.onclick = function () {
+                    startUpiIntentPayment(appCode);
+                };
+                appsContainer.appendChild(btn);
+            });
+        }
+
+        // 3. Trigger payment using the specific app the user picked
+        function startUpiIntentPayment(appCode) {
+            statusEl.textContent = "Opening " + appCode.toUpperCase() + "...";
+
+            var paymentData = {
+                amount: 1000, // in paise — confirm this matches the amount you intend to charge
+                method: 'upi',
+                contact: '9701798308', 
+                email: 'gaurav.kumar@example.com', 
+                order_id: 'order_T8CSnhzJ2hMWqS'
+            };
+
+            razorpay.createPayment(paymentData, { app: appCode });
+        }
     </script>
-    
+
 </body>
 </html>
