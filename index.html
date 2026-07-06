@@ -51,9 +51,9 @@
         var paymentData = {
     amount: 100, //pass in paise (amount: 100000 equals ₹1000)
     method: 'upi',
-//     "upi":{
-//       "flow":"intent"
-//   },
+    "upi":{
+      "flow":"intent"
+  },
     contact: '9701798308',  // customer's mobile number
     email: 'gaurav.kumar@example.com',  //customer's email address
     order_id: 'order_T8b8J2HCb425dD' //.. and other payment parameters, as usual
@@ -69,5 +69,69 @@ document.getElementById('rzp-button1').onclick = function(e){
 }
 
     </script>
+
+    <script>
+        var btn = document.getElementById("pay");
+        btn.addEventListener('click', function(){
+            console.log("triggered");
+             userAction();
+});
+            const userAction = async () => {
+  const keyId = "rzp_live_Q8ur2eCvhLG4Uk";
+const keySecret = "7RIALIzKuujYCyvpPl0W3wry";
+
+const payload = {
+  amount: 100,
+  currency: "INR",
+  contact: "9900008989",
+  email: "gaurav.kumar@example.com",
+  order_id: "order_T7kvop6QzhIDEa",
+  callback_url: "https://webhook.site/fa184d00-53da-4257-b5e4-f98e3373b005",
+  method: 'upi',
+    "upi":{
+      "flow":"intent"
+  }
+//   authentication: {
+//     authentication_channel: "browser"
+//   },
+//   browser: {
+//     java_enabled: false,
+//     javascript_enabled: false,
+//     timezone_offset: 11,
+//     color_depth: 23,
+//     screen_width: 23,
+//     screen_height: 100
+//   },
+//   ip: "105.106.107.108",
+//   referer: "https://merchansite.com/example/paybill",
+//   user_agent: "Mozilla/5.0"
+};
+try {
+const response = await fetch(
+  "https://api.razorpay.com/v1/payments/create/json",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${btoa(`${keyId}:${keySecret}`)}`
+    },
+    body: JSON.stringify(payload)
+  }
+);
+
+
+const data = await response.json();
+console.log(data);
+
+}
+
+catch (err) {
+    console.error(err);
+  }
+
+}
+
+    </script>
+    
 </body>
 </html>
