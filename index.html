@@ -43,35 +43,8 @@
     <script src="structure.js"></script>
     <button id = "rzp-button1">Pay</button>
 
-
-<script>
-        // ⚠️ Rotate this key from your Razorpay Dashboard — it was shared in plain text earlier in this chat
-        var razorpay = new Razorpay({ key: 'rzp_live_T52MWlo0hd9V0R' });
-
-        var paymentData = {
-    amount: 100, //pass in paise (amount: 100000 equals ₹1000)
-    method: 'upi',
-    "upi":{
-      "flow":"intent"
-  },
-    contact: '9701798308',  // customer's mobile number
-    email: 'gaurav.kumar@example.com',  //customer's email address
-    order_id: 'order_T8b8J2HCb425dD' //.. and other payment parameters, as usual
-  };
-
-document.getElementById('rzp-button1').onclick = function(e){
-  razorpay.createPayment(paymentData, { app: 'phonepe'});
-   razorpay.on('payment.success', function(response) {
-   response.razorpay_payment_id
-   response.razorpay_order_id
-  });
-  razorpay.on('payment.error', function(resp){alert(resp.error.description)});
-}
-
-    </script>
-
     <script>
-        var btn = document.getElementById("pay");
+        var btn = document.getElementById("rzp-button1");
         btn.addEventListener('click', function(){
             console.log("triggered");
              userAction();
