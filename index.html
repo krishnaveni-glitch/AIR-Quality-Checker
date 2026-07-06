@@ -41,6 +41,7 @@
     </div>
     </div>
     <script src="structure.js"></script>
+    </script>
 
     <script>
         var btn = document.getElementById("rzp-button1");
@@ -62,21 +63,21 @@ const payload = {
   method: 'upi',
     "upi":{
       "flow":"intent"
-  }
-//   authentication: {
-//     authentication_channel: "browser"
-//   },
-//   browser: {
-//     java_enabled: false,
-//     javascript_enabled: false,
-//     timezone_offset: 11,
-//     color_depth: 23,
-//     screen_width: 23,
-//     screen_height: 100
-//   },
-//   ip: "105.106.107.108",
-//   referer: "https://merchansite.com/example/paybill",
-//   user_agent: "Mozilla/5.0"
+  },
+  authentication: {
+    authentication_channel: "browser"
+  },
+  browser: {
+    java_enabled: false,
+    javascript_enabled: false,
+    timezone_offset: 11,
+    color_depth: 23,
+    screen_width: 23,
+    screen_height: 100
+  },
+  ip: "105.106.107.108",
+  referer: "https://merchansite.com/example/paybill",
+  user_agent: "Mozilla/5.0"
 };
 try {
 const response = await fetch(
