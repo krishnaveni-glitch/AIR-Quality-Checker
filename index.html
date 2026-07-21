@@ -1,50 +1,74 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script type="text/javascript" src="https://checkout.razorpay.com/v1/razorpay.js"></script>
+    <link rel="stylesheet" href = "./Air Quality.css">
+
+    <title>Air Quality</title>
 </head>
 <body>
-     <button id="rzp-button1">Pay</button>
 
-    <script>
-        var razorpay = new Razorpay({
-  key: 'rzp_live_T52MWlo0hd9V0R',
-  image: 'https://picsum.photos/200/300', 
-  // logo, displayed in the payment processing popup
-  redirect: true
-});
-var data = {
-    callback_url: 'https://webhook.site/b1331777-52fe-4e82-af1b-a42a27376573',
-  amount: 100, // in currency subunits. 
-  currency: "INR",// 
-  email: 'gundrathi.krisna2003@gmail.com',
-  contact: '9701798308',
-  notes: {
-    address: 'Ground Floor, SJR Cyber, Laskar Hosur Road, Bengaluru',
-  },
-  order_id: 'order_TDHARP26AO4Srl',// Replace with Order ID generated in Step 4
-  method: 'card',
-
-  // method specific fields
-  card: {
-    number: 5181590205086424,
-    name: "Krishnaveni Gubdrathi",
-    expiry_month: 12,
-    expiry_year: 31,
-    cvv: 164
-  }
+    <button id="rzp-button1">Pay</button>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "rzp_test_T5MHDcKxWS3sZn", // Enter the Key ID generated from the Dashboard
+    "amount": "1000", // Amount is in currency subunits. 
+    "currency": "INR",
+    "name": "GUNDRATHI KRISHNAVENI", //your business name
+    "description": "Test Transaction",
+    // "image": "https://example.com/your_logo",
+    "order_id": "order_TG4GxfzrSdgoGb", // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "callback_url": "https://webhook.site/b1331777-52fe-4e82-af1b-a42a27376573",
+    "redirect":true,
+    "prefill": { 
+        
+        "name": "Gaurav Kumar", 
+        "email": "gaurav.kumar123@example.com",
+        "contact": "+919948039832", 
+        "method": "upi"
+    },
+    // "readonly":{
+    //     "contact": true,
+    //     "email": true,
+    //     "name":true
+    // },
+    "retry":false,
+    "hidden":{
+        "contact":true,
+        "email":true
+    },
+    "timeout": 900,
+    // "notes": {
+    //     "address": "Razorpay Corporate Office"
+    // },
+    "theme": {
+        "color": "#3399cc",
+        "backdrop_color": "#FF0000"
+    },
+    // "modal": {
+    //     "backdropclose": true,
+    //     "escape": true,
+    //     "handleback": true,
+    //     "confirm_close": false,
+    //     "ondismiss": function(){
+    //         console.log("Yes closed"); 
+    //     },
+    //     "animation": false
+    // }
 };
+var rzp1 = new Razorpay(options);
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
 
-var btn = document.getElementById("rzp-button1");
-btn.addEventListener('click', function(){
-  // has to be placed within user initiated context, such as click, in order for popup to open.
-  razorpay.createPayment(data);
+    </div>
+    <script src = "Air Quality.js"> </script>
 
-})
-    </script>
-
+    
 </body>
 </html>
