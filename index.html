@@ -14,61 +14,37 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 var options = {
-    "key": "rzp_test_T5MHDcKxWS3sZn", // Enter the Key ID generated from the Dashboard
-    "amount": "100", // Amount is in currency subunits. 
-    "currency": "INR",
+    "key": "rzp_test_TUnQ5IXZgJkEoV", // Enter the Key ID generated from the Dashboard
+    "amount": "4000", // Amount is in currency subunits. 
+    // "currency": "INR",
+    "subscription_id":"sub_TaF6mOuOV70OwP",
     // "name": "GUNDRATHI KRISHNAVENI", //your business name
     "description": "Test Transaction",
     // "image": "https://example.com/your_logo",
-    // "order_id": "order_TOp5ITKCB2GX7B", // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    // "order_id": "order_TAEKr8snFSOzaD", // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
     "callback_url": "https://webhook.site/b1331777-52fe-4e82-af1b-a42a27376573",
     "redirect":false,
-    "prefill": { 
-        
-        "name": "Gaurav Kumar",
-        // "email": "gaurav.kumar123@example.com",
-        // "contact": " ", 
-        // "method": "upi"
-        "method":{
-        "upi": true,
-        "cards": false
-    }
+    // "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+    //     "name": "Gaurav Kumar", //your customer's name
+    //     "email": "gaurav.kumar@example.com",
+    //     "contact": "+919876543210" //Provide the customer's phone number for better conversion rates 
+    // },
+    "notes": {
+        "address": "Razorpay Corporate Office"
     },
-    // "hidden":{
-    //     "contact":true
-    // },
-    // "readonly":{
-    //     "contact": true,
-    //     "email": true,
-    //     "name":true
-    // },
-    // "method":{
-    //     "upi": true,
-    //     "cards": false
-    // },
-    "retry":false,
-    "hidden":{
-        "contact":true,
-        "email":true
-    },
-    "timeout": 900,
-    // "notes": {
-    //     "address": "Razorpay Corporate Office"
-    // },
     "theme": {
-        "color": "#3399cc",
-        "backdrop_color": "#FF0000"
+        "color": "#3399cc"
     },
-    // "modal": {
-    //     "backdropclose": true,
-    //     "escape": true,
-    //     "handleback": true,
-    //     "confirm_close": false,
-    //     "ondismiss": function(){
-    //         console.log("Yes closed"); 
-    //     },
-    //     "animation": false
-    // }
+    "modal": {
+        "backdropclose": true,
+        "escape": true,
+        "handleback": true,
+        "confirm_close": false,
+        "ondismiss": function(){
+            console.log("Yes closed"); 
+        },
+        "animation": false
+    }
 };
 var rzp1 = new Razorpay(options);
 document.getElementById('rzp-button1').onclick = function(e){
