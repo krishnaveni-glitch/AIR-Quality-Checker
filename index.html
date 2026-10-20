@@ -35,16 +35,26 @@ var options = {
     "theme": {
         "color": "#3399cc"
     },
-    "modal": {
-        "backdropclose": true,
-        "escape": true,
-        "handleback": true,
-        "confirm_close": false,
-        "ondismiss": function(){
-            console.log("Yes closed"); 
-        },
-        "animation": false
+     config: {
+    display: {
+      blocks: {
+        upi_apps: {
+          name: "Pay via UPI Apps",
+          instruments: [
+            {
+              method: "upi",
+              flows: ["intent"],
+              apps: ["phonepe", "bhim"]
+            }
+          ]
+        }
+      },
+      sequence: ["block.upi_apps"],
+      preferences: {
+        show_default_blocks: false // hides all other payment methods
+      }
     }
+  }
 };
 var rzp1 = new Razorpay(options);
 document.getElementById('rzp-button1').onclick = function(e){
